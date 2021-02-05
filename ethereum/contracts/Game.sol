@@ -3,48 +3,48 @@ pragma solidity ^0.4.17;
 contract GameFactory {
     address[] public deployedGames;
 
-    function create_game(uint256 minimum) public {
+    function createGame(uint256 minimum) public {
         address newGame = new Game(minimum, msg.sender);
         deployedGames.push(newGame);
     }
 
-    function get_deployed_games() public view returns (address[]) {
+    function getDeployedGames() public view returns (address[]) {
         return deployedGames;
     }
 }
 
 contract Game {
     address manager;
-    uint256 minimum_amount;
+    uint256 minimumAmount;
     address[] public players;
-    mapping(address => uint256) public players_map;
+    mapping(address => uint256) public playersMap;
 
     modifier restricted() {
-        require(players_map[msg.sender] >= minimum_amount);
+        require(playersMap[msg.sender] >= minimumAmount);
         _;
     }
 
     function Game(uint256 minimum, address creator) public {
-        minimum_amount = minimum;
+        minimumAmount = minimum;
         manager = creator;
     }
 
     function enter() public payable {
-        require(msg.value >= minimum_amount);
+        require(msg.value >= minimumAmount);
 
         players.push(msg.sender);
-        players_map[msg.sender] = msg.value;
+        playersMap[msg.sender] = msg.value;
     }
 
-    function get_players() public view returns (address[]) {
+    function getPlayers() public view returns (address[]) {
         return players;
     }
 
-    function end_game() public restricted {
+    function endGame() public restricted {
         for (uint256 i = 0; i < players.length; i++) {
             address player = players[i];
-            player.transfer(players_map[player]);
-            players_map[player] = 0;
+            player.transfer(playersMap[player]);
+            playersMap[player] = 0;
         }
     }
 }
