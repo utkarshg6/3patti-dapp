@@ -19,10 +19,10 @@ contract Game {
 
     address[] public players;
     mapping(address => bool) public isPlaying;
-    mapping(address => uint256) public amount;
+    mapping(address => uint256) public wageredAmount;
 
     bool hasGameStarted;
-    bool hasGameFinished;
+    bool hasGameEnded;
 
     modifier playerOnly() {
         require(isPlaying[msg.sender] == true);
@@ -41,18 +41,18 @@ contract Game {
         minimumAmount = minimum;
 
         hasGameStarted = false;
-        hasGameFinished = false;
+        hasGameEnded = false;
     }
 
     function gameStatus() public view returns (string) {
         if (hasGameStarted) {
-            if (hasGameFinished) {
+            if (hasGameEnded) {
                 return "Played and Finished";
             } else {
                 return "Playing";
             }
         } else {
-            if (hasGameFinished) {
+            if (hasGameEnded) {
                 return "Not Played but Finished";
             } else {
                 return "Game not Started";
@@ -65,48 +65,64 @@ contract Game {
     }
 
     function enterGame() public payable {
-        require(!hasGameStarted && !hasGameFinished);
+        require(!hasGameStarted && !hasGameEnded);
         require(msg.value >= minimumAmount);
 
         players.push(msg.sender);
-        amount[msg.sender] = msg.value;
+        wageredAmount[msg.sender] = msg.value;
         isPlaying[msg.sender] = true;
     }
 
     function startGame() public managerOnly {
-        require(!hasGameStarted && !hasGameFinished);
+        require(!hasGameStarted && !hasGameEnded);
         require(msg.sender == manager);
 
         hasGameStarted = true;
     }
 
-    function saveGame(address[] currentAddresses, uint256[] currentStatus)
+    function verifyStatus(address[] addresses, uint256[] amounts)
+        private
+        view
+        returns (bool)
+    {
+        require(addresses.length == amounts.length);
+        uint256 len = addresses.length;
+
+        bool addressFlag = true;
+        bool amountFlag;
+
+        uint256 sum = 0;
+        for (uint256 i = 0; i < len; i++) {
+            if (!isPlaying[addresses[i]]) {
+                addressFlag = false;
+            }
+            sum += amounts[i];
+        }
+        amountFlag = sum == address(this).balance;
+
+        return addressFlag && amountFlag;
+    }
+
+    function saveGame(address[] currentAddresses, uint256[] currentAmounts)
         public
         managerOnly
     {
-        require(hasGameStarted && !hasGameFinished);
-        require(currentAddresses.length == currentStatus.length);
+        require(hasGameStarted && !hasGameEnded);
+        require(verifyStatus(currentAddresses, currentAmounts));
 
-        uint256 sum = 0;
-        uint256 i;
-        for (i = 0; i < currentStatus.length; i++) {
-            sum += currentStatus[i];
-        }
-        require(sum == address(this).balance);
-
-        for (i = 0; i < currentAddresses.length; i++) {
-            amount[currentAddresses[i]] = currentStatus[i];
+        for (uint256 i = 0; i < currentAddresses.length; i++) {
+            wageredAmount[currentAddresses[i]] = currentAmounts[i];
         }
     }
 
     function endGame() public managerOnly {
         for (uint256 i = 0; i < players.length; i++) {
             address player = players[i];
-            player.transfer(amount[player]);
-            amount[player] = 0;
+            player.transfer(wageredAmount[player]);
+            wageredAmount[player] = 0;
             isPlaying[player] = false;
         }
 
-        hasGameFinished = true;
+        hasGameEnded = true;
     }
 }
