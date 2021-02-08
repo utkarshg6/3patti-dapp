@@ -18,13 +18,19 @@ contract Game {
     uint256 minimumAmount;
 
     address[] public players;
-    mapping(address => uint256) public playersMap;
+    mapping(address => bool) public isPlaying;
+    mapping(address => uint256) public amount;
 
     bool hasGameStarted;
     bool hasGameFinished;
 
-    modifier restricted() {
-        require(playersMap[msg.sender] >= minimumAmount);
+    modifier playerOnly() {
+        require(isPlaying[msg.sender] == true);
+        _;
+    }
+
+    modifier managerOnly() {
+        require(msg.sender == manager);
         _;
     }
 
@@ -63,10 +69,11 @@ contract Game {
         require(msg.value >= minimumAmount);
 
         players.push(msg.sender);
-        playersMap[msg.sender] = msg.value;
+        amount[msg.sender] = msg.value;
+        isPlaying[msg.sender] = true;
     }
 
-    function startGame() public {
+    function startGame() public managerOnly {
         require(!hasGameStarted && !hasGameFinished);
         require(msg.sender == manager);
 
@@ -75,6 +82,7 @@ contract Game {
 
     function saveGame(address[] currentAddresses, uint256[] currentStatus)
         public
+        managerOnly
     {
         require(hasGameStarted && !hasGameFinished);
         require(currentAddresses.length == currentStatus.length);
@@ -87,15 +95,16 @@ contract Game {
         require(sum == address(this).balance);
 
         for (i = 0; i < currentAddresses.length; i++) {
-            playersMap[currentAddresses[i]] = currentStatus[i];
+            amount[currentAddresses[i]] = currentStatus[i];
         }
     }
 
-    function endGame() public restricted {
+    function endGame() public managerOnly {
         for (uint256 i = 0; i < players.length; i++) {
             address player = players[i];
-            player.transfer(playersMap[player]);
-            playersMap[player] = 0;
+            player.transfer(amount[player]);
+            amount[player] = 0;
+            isPlaying[player] = false;
         }
 
         hasGameFinished = true;
