@@ -14,8 +14,8 @@ contract GameFactory {
 }
 
 contract Game {
-    address manager;
-    uint256 minimumAmount;
+    address public manager;
+    uint256 public minimumAmount;
 
     address[] public players;
     mapping(address => bool) public isPlaying;
@@ -72,8 +72,9 @@ contract Game {
     }
 
     function startGame() public managerOnly {
-        require(!hasGameStarted && !hasGameEnded);
         require(msg.sender == manager);
+        require(!hasGameStarted && !hasGameEnded);
+        require(players.length >= 2);
 
         hasGameStarted = true;
     }
