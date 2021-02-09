@@ -45,13 +45,13 @@ contract Game {
     function gameStatus() public view returns (string) {
         if (hasGameStarted) {
             if (hasGameEnded) {
-                return "Played and Finished";
+                return "Played and Ended";
             } else {
                 return "Playing";
             }
         } else {
             if (hasGameEnded) {
-                return "Not Played but Finished";
+                return "Not Played but Ended";
             } else {
                 return "Game not Started";
             }

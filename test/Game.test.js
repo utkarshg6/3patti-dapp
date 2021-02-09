@@ -56,7 +56,7 @@ describe('Games', () => {
         assert.equal(manager, accounts[0]);
     });
 
-    it('allows users to enter the game and mark them as players along with correct amount', async () => {
+    it('allows users to enter the game and mark them as players along with the correct amount', async () => {
         const account = accounts[1];
         const amount = web3.utils.toWei('1.1', 'ether');
 
@@ -110,7 +110,7 @@ describe('Games', () => {
         }
     });
 
-    it('allows manager to start a game', async () => {
+    it('allows the manager to start a game', async () => {
         const managerAccount = accounts[0];
         const account_1 = accounts[1];
         const account_2 = accounts[2];
@@ -199,7 +199,7 @@ describe('Games', () => {
 
     });
 
-    it('allows manager to save a game', async () => {
+    it('allows the manager to save a game', async () => {
         const managerAccount = accounts[0];
         const account_1 = accounts[1];
         const account_2 = accounts[2];
@@ -247,7 +247,7 @@ describe('Games', () => {
         assert.equal(account_2_balance, web3.utils.toWei('.2', 'ether'));
     });
 
-    it('allows manager to end a game', async () => {
+    it('allows the manager to end a game', async () => {
         const managerAccount = accounts[0];
         const account_1 = accounts[1];
         const account_2 = accounts[2];
