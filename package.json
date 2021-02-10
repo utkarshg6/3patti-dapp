@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha",
-    "compile": "node ethereum/compile.js"
+    "compile": "node ethereum/compile.js",
+    "deploy": "node ethereum/deploy.js",
+    "dev": "next dev"
   },
   "repository": {
     "type": "git",
@@ -18,6 +20,7 @@
   },
   "homepage": "https://github.com/utkarshg6/3patti-dapp#readme",
   "dependencies": {
+    "elliptic": "^6.5.4",
     "fs-extra": "^9.1.0",
     "ganache-cli": "^6.12.2",
     "mocha": "^8.2.1",
@@ -25,6 +28,7 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "solc": "^0.4.17",
+    "truffle-hdwallet-provider": "^1.0.17",
     "web3": "^1.3.4"
   }
 }
