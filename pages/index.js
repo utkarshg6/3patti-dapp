@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 // import ethereum from "../ethereum/MetaMask";
-import { Card } from 'semantic-ui-react';
+import { Card, Button } from 'semantic-ui-react';
 import factory from '../ethereum/factory';
+import Layout from '../components/layout';
 
 class ComponentIndex extends Component {
 
@@ -30,10 +31,20 @@ class ComponentIndex extends Component {
     // }
 
     render() {
-        return <div>
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css"></link>
-            {this.renderGames()}
-        </div>
+        return (
+            <Layout>
+                <div>
+                    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css"></link>
+                    <h3>Games</h3>
+                    {this.renderGames()}
+                    <Button
+                        content="New Game"
+                        icon="add circle"
+                        primary
+                    />
+                </div>
+            </Layout>
+        );
     }
 }
 
