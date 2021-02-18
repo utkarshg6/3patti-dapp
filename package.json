@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha",
-    "compile": "node ethereum/compile.js",
-    "deploy": "node ethereum/deploy.js",
-    "dev": "next dev"
+    "compile-contracts": "node ethereum/compile.js",
+    "deploy-contracts": "node ethereum/deploy.js",
+    "dev": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -25,6 +25,7 @@
     "ganache-cli": "^6.12.2",
     "mocha": "^8.2.1",
     "next": "^10.0.6",
+    "next-routes": "^1.4.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "semantic-ui-react": "^2.0.3",
